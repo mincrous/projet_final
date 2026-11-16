@@ -1,4 +1,3 @@
-- name: Create pgAdmin data directory
 - name: Prepare pgAdmin storage directory on a remote host
   ansible.builtin.file:
     path: "{{ pgadmin_data_host_path }}"
