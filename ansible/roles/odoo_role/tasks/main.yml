@@ -1,0 +1,32 @@
+- name: Create Odoo storage directories on the target host
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+  loop:
+    - "{{ odoo_db_host_path }}"
+    - "{{ odoo_data_host_path }}"
+  become: true
+  when: ansible_connection is defined and ansible_connection != "local"
+
+- name: Create the generated Odoo Compose project directory
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/../generated/odoo"
+    state: directory
+    mode: "0750"
+
+- name: Render the Odoo Compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ playbook_dir }}/../generated/odoo/docker-compose.yml"
+    mode: "0640"
+
+- name: Deploy Odoo and PostgreSQL with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ playbook_dir }}/../generated/odoo"
+    project_name: odoo
+    state: present
+    pull: missing
+  environment:
+    ODOO_DB_PASSWORD: "{{ lookup('env', 'ODOO_DB_PASSWORD') }}"
+  no_log: true

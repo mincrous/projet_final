@@ -1,0 +1,22 @@
+pgadmin_image: dpage/pgadmin4:9.19
+pgadmin_service_name: pgadmin
+pgadmin_container_name: icgroup-pgadmin
+
+pgadmin_network_name: icgroup-apps
+pgadmin_network_external: true
+
+pgadmin_data_volume_name: icgroup-pgadmin-data
+pgadmin_data_host_path: /srv/icgroup/pgadmin
+pgadmin_data_mount_path: /var/lib/pgadmin
+pgadmin_bind_mounts_enabled: false
+
+pgadmin_servers_host_path: /srv/icgroup/pgadmin/servers.json
+pgadmin_servers_mount_path: /pgadmin4/servers.json
+
+pgadmin_host_port: 8084
+pgadmin_default_email: admin@example.com
+
+pgadmin_odoo_db_host: postgres
+pgadmin_odoo_db_port: 5432
+pgadmin_odoo_db_name: postgres
+pgadmin_odoo_db_user: odoo

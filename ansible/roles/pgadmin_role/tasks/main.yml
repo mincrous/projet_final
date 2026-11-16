@@ -1,0 +1,38 @@
+- name: Create pgAdmin data directory
+- name: Prepare pgAdmin storage directory on a remote host
+  ansible.builtin.file:
+    path: "{{ pgadmin_data_host_path }}"
+    state: directory
+    mode: "0750"
+  become: true
+  when: ansible_connection is defined and ansible_connection != "local"
+
+- name: Create the generated pgAdmin Compose project directory
+  ansible.builtin.file:
+    path: "{{ playbook_dir }}/../generated/pgadmin"
+    state: directory
+    mode: "0750"
+
+- name: Render pgAdmin server definitions on a remote host
+  ansible.builtin.template:
+    src: servers.json.j2
+    dest: "{{ pgadmin_servers_host_path }}"
+    mode: "0640"
+  become: true
+  when: ansible_connection is defined and ansible_connection != "local"
+
+- name: Render the pgAdmin Compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ playbook_dir }}/../generated/pgadmin/docker-compose.yml"
+    mode: "0640"
+
+- name: Deploy pgAdmin with Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ playbook_dir }}/../generated/pgadmin"
+    project_name: pgadmin
+    state: present
+    pull: missing
+  environment:
+    PGADMIN_DEFAULT_PASSWORD: "{{ lookup('env', 'PGADMIN_DEFAULT_PASSWORD') }}"
+  no_log: true

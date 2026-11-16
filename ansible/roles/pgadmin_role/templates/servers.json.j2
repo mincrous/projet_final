@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Odoo PostgreSQL",
+      "Group": "Servers",
+      "Host": "{{ pgadmin_odoo_db_host }}",
+      "Port": {{ pgadmin_odoo_db_port }},
+      "MaintenanceDB": "{{ pgadmin_odoo_db_name }}",
+      "Username": "{{ pgadmin_odoo_db_user }}",
+      "SSLMode": "prefer"
+    }
+  }
+}

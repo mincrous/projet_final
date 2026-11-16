@@ -1,0 +1,7 @@
+- name: Deploy IC Group applications
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - odoo_role
+    - pgadmin_role

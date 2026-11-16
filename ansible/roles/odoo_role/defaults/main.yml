@@ -1,0 +1,23 @@
+odoo_db_image: postgres:13
+odoo_app_image: odoo:13.0
+
+odoo_db_service_name: postgres
+odoo_app_service_name: odoo
+
+odoo_db_container_name: icgroup-postgres
+odoo_app_container_name: icgroup-odoo
+
+odoo_network_name: icgroup-apps
+odoo_db_volume_name: icgroup-odoo-db-data
+odoo_data_volume_name: icgroup-odoo-data
+
+odoo_db_host_path: /srv/icgroup/postgres
+odoo_data_host_path: /srv/icgroup/odoo
+
+odoo_db_mount_path: /var/lib/postgresql/data
+odoo_data_mount_path: /var/lib/odoo
+
+odoo_db_name: postgres
+odoo_db_user: odoo
+odoo_host_port: 8069
+odoo_bind_mounts_enabled: false
