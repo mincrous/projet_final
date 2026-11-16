@@ -70,6 +70,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Déployer IC WebApp') {
+            steps {
+                sh '''
+                    docker rm -f ic-webapp 2>/dev/null || true
+                    docker run -d --name ic-webapp --restart unless-stopped \
+                        -p 8085:8080 \
+                        -e ODOO_URL=http://localhost:8069 \
+                        -e PGADMIN_URL=http://localhost:8084 \
+                        "$IMAGE:$APP_VERSION"
+                '''
+            }
+        }
     }
 
     post {
