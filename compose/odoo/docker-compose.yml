@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: ${ODOO_DB_CONTAINER_NAME}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${ODOO_DB_USER}
+      POSTGRES_PASSWORD: ${ODOO_DB_PASSWORD}
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  odoo:
+    image: odoo:13.0
+    container_name: ${ODOO_CONTAINER_NAME}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${ODOO_HOST_PORT}:8069"
+    environment:
+      HOST: postgres
+      USER: ${ODOO_DB_USER}
+      PASSWORD: ${ODOO_DB_PASSWORD}
+    volumes:
+      - odoo-data:/var/lib/odoo
+    networks:
+      - app-network
+
+volumes:
+  odoo-db-data:
+    name: ${ODOO_DB_VOLUME_NAME}
+  odoo-data:
+    name: ${ODOO_DATA_VOLUME_NAME}
+
+networks:
+  app-network:
+    name: ${DOCKER_NETWORK_NAME}
+    driver: bridge
